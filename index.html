@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L'Intrus du Motif</title>
+    <title>L'Intrus du Motif - Classique</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-bg: #f7fafd; /* Très léger bleu */
@@ -24,6 +25,33 @@
             --info-color: #555;
             --shadow-light: rgba(0, 0, 0, 0.05);
             --shadow-medium: rgba(0, 0, 0, 0.2);
+            --heart-color: #ff0000; /* Couleur des cœurs par défaut */
+        }
+
+        /* Thème Pixel Art - Simplifié car c'est le seul maintenant */
+        body.theme-pixelart {
+            --primary-bg: #282c34; /* Gris foncé */
+            --secondary-bg: #3c4048; /* Gris moyen */
+            --text-color: #e0e0e0;
+            --header-color: #61dafb; /* Bleu clair */
+            --grid-memo-border: #9be9a8; /* Vert pixel */
+            --grid-memo-bg: #4a5059;
+            --grid-cell-bg: #5f6671;
+            --selection-border: #ffe000; /* Jaune vif */
+            --selection-bg: #7d7d00;
+            --selection-motif-bg: #a8a800;
+            --button-bg: #61dafb;
+            --button-hover-bg: #2196f3;
+            --timer-color: #ff5252;
+            --correct-color: #4caf50;
+            --wrong-color: #f44336;
+            --info-color: #b0b0b0;
+            --heart-color: #ff5252; /* Rouge pixel */
+        }
+
+        .grid-cell.pixel-style, .selection-motif.pixel-style {
+            border-radius: 2px !important; /* Coins plus carrés */
+            font-family: 'Press Start 2P', cursive;
         }
 
         body {
@@ -36,12 +64,13 @@
             background-color: var(--primary-bg);
             margin: 0;
             color: var(--text-color);
-            overflow-x: hidden; /* Empêche le défilement horizontal */
+            overflow-x: hidden;
+            transition: background-color 0.5s ease; /* Transition pour le changement de thème */
         }
 
         h1 {
             color: var(--header-color);
-            margin-bottom: 20px; /* Réduit la marge */
+            margin-bottom: 20px;
             font-size: 3em;
             text-align: center;
             line-height: 1.2;
@@ -49,13 +78,13 @@
 
         #game-container {
             background-color: var(--secondary-bg);
-            padding: 30px; /* Réduit le padding */
+            padding: 30px;
             border-radius: 20px;
             box-shadow: 0 15px 40px var(--shadow-medium);
             text-align: center;
             width: 90%;
             max-width: 700px;
-            box-sizing: border-box; /* Inclut padding et border dans la largeur */
+            box-sizing: border-box;
         }
 
         #game-grid-memo, #intruder-selection {
@@ -63,19 +92,19 @@
             grid-template-columns: repeat(4, 90px);
             grid-template-rows: repeat(4, 90px);
             gap: 10px;
-            margin: 25px auto; /* Réduit la marge */
+            margin: 25px auto;
             border: 2px solid var(--grid-memo-border);
             border-radius: 10px;
             padding: 10px;
             background-color: var(--grid-memo-bg);
             width: fit-content;
-            max-width: 100%; /* Assure la responsivité */
+            max-width: 100%;
             box-sizing: border-box;
-            justify-content: center; /* Centre la grille horizontalement */
+            justify-content: center;
         }
 
         #intruder-selection {
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Adaptatif */
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
             grid-template-rows: auto;
             gap: 15px;
             border-color: var(--selection-border);
@@ -90,7 +119,7 @@
                 gap: 8px;
             }
             .grid-cell, .selection-motif {
-                width: auto; /* Permet aux cellules de s'adapter */
+                width: auto;
                 height: 60px;
                 font-size: 2.2em;
             }
@@ -108,9 +137,8 @@
             }
         }
 
-
         .grid-cell, .selection-motif {
-            width: 90px; /* Défaut pour les écrans plus grands */
+            width: 90px;
             height: 90px;
             background-color: var(--grid-cell-bg);
             border-radius: 8px;
@@ -119,17 +147,17 @@
             justify-content: center;
             font-size: 3em;
             cursor: default;
-            transition: background-color 0.1s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out, opacity 0.5s ease-out; /* Ajout d'opacity pour fade */
+            transition: background-color 0.1s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out, opacity 0.5s ease-out;
             user-select: none;
             box-shadow: inset 0 2px 5px var(--shadow-light);
         }
         
         .grid-cell.hidden-motif {
-            opacity: 0; /* Pour l'animation de masquage */
+            opacity: 0;
         }
 
         .selection-motif {
-            width: 100px; /* Défaut pour les écrans plus grands */
+            width: 100px;
             height: 100px;
             background-color: var(--selection-motif-bg);
             cursor: pointer;
@@ -137,14 +165,14 @@
 
         .selection-motif:hover {
             transform: scale(1.05);
-            background-color: #ffd54f; /* Couleur de survol */
+            background-color: #ffd54f;
         }
 
         .selection-motif.correct {
             background-color: var(--correct-color) !important;
             box-shadow: 0 0 15px var(--correct-color);
             cursor: default;
-            animation: pulse-correct 0.8s infinite alternate; /* Animation pour la bonne réponse */
+            animation: pulse-correct 0.8s infinite alternate;
         }
         
         @keyframes pulse-correct {
@@ -156,7 +184,7 @@
             background-color: var(--wrong-color) !important;
             box-shadow: 0 0 15px var(--wrong-color);
             cursor: default;
-            animation: shake 0.5s; /* Animation pour la mauvaise réponse */
+            animation: shake 0.5s;
         }
 
         @keyframes shake {
@@ -165,11 +193,22 @@
             40%, 80% { transform: translateX(5px); }
         }
 
-        /* Styles pour masquer/afficher les grilles */
-        #game-grid-memo { display: none; }
-        #intruder-selection { display: none; }
-        #intro-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;}
-        #intro-screen p { margin-bottom: 15px; line-height: 1.6; font-size: 1.1em;}
+        /* Styles pour les écrans */
+        #game-grid-memo, #intruder-selection { 
+            display: none; 
+        }
+        #intro-screen { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px;
+        }
+        #intro-screen p { 
+            margin-bottom: 15px; 
+            line-height: 1.6; 
+            font-size: 1.1em;
+        }
 
         button.control-button {
             padding: 15px 30px;
@@ -180,8 +219,8 @@
             border-radius: 10px;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.1s ease;
-            margin: 10px; /* Marge uniforme */
-            min-width: 180px; /* Largeur minimale pour uniformité */
+            margin: 10px;
+            min-width: 180px;
         }
 
         button.control-button:hover:not(:disabled) {
@@ -199,12 +238,12 @@
             font-size: 1.8em;
             font-weight: bold;
             color: var(--timer-color);
-            margin-bottom: 15px; /* Réduit la marge */
+            margin-bottom: 15px;
             min-height: 30px;
         }
 
         #message {
-            margin-top: 20px; /* Réduit la marge */
+            margin-top: 20px;
             font-size: 1.4em;
             font-weight: bold;
             min-height: 25px;
@@ -227,6 +266,33 @@
             font-size: 1.1em;
             color: var(--info-color);
         }
+
+        /* Confetti effect */
+        @keyframes fall {
+            0% {
+                opacity: 1;
+                transform: translateY(-100px) rotateZ(0deg) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(1000px) rotateZ(720deg) scale(0.5);
+            }
+        }
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            z-index: 9999;
+            border-radius: 50%;
+        }
+
+        /* Styles pour les cœurs */
+        .heart {
+            color: var(--heart-color);
+        }
+        .heart-empty {
+            color: #ccc; /* Couleur pour les cœurs vides */
+        }
     </style>
 </head>
 <body>
@@ -236,12 +302,12 @@
             <p>Bienvenue dans "L'Intrus du Motif" !</p>
             <p><strong>Règles du jeu :</strong></p>
             <p>1. Une grille de motifs va apparaître pendant quelques secondes. Mémorisez bien tous les motifs et leurs emplacements.</p>
-            <p>2. Ensuite, la grille disparaîtra et 5 ou plus motifs apparaîtront. Un seul de ces motifs n'était <strong>PAS</strong> présent dans la grille de mémorisation.</p>
+            <p>2. Ensuite, la grille disparaîtra et plusieurs motifs apparaîtront. Un seul de ces motifs n'était <strong>PAS</strong> présent dans la grille de mémorisation.</p>
             <p>3. Cliquez sur l'intrus !</p>
             <p>Vous avez <strong><span id="initial-lives">3</span> vies</strong>. Chaque mauvaise réponse vous fera perdre une vie. Accumulez des points et atteignez le plus haut niveau !</p>
             <button id="start-intro-button" class="control-button">Commencer le jeu</button>
         </div>
-
+        
         <p id="game-status" style="display: none;">Score: 0 | Vies: ❤️❤️❤️</p>
         <p id="level-info" style="display: none;">Niveau : 1</p>
         <p id="timer-display"></p>
@@ -257,6 +323,8 @@
     </div>
 
     <script>
+        // --- Références DOM ---
+        const gameContainer = document.getElementById('game-container');
         const gameGridMemo = document.getElementById('game-grid-memo');
         const intruderSelectionDiv = document.getElementById('intruder-selection');
         const messageDisplay = document.getElementById('message');
@@ -268,34 +336,35 @@
         const restartButton = document.getElementById('restart-button');
         const introScreen = document.getElementById('intro-screen');
         const bestScoreDisplay = document.getElementById('best-score');
-        const initialLivesSpan = document.getElementById('initial-lives'); // Pour afficher les vies initiales dans les règles
+        const initialLivesSpan = document.getElementById('initial-lives');
 
-        // Une liste de motifs simples (utiliser des emojis pour la démo)
+        // --- Variables Globales ---
         const allMotifs = ['☀️', '⭐', '🌈', '⚡', '🌸', '🌲', '🍎', '🍓', '💧', '🔥', '💎', '🚀', '🐢', '🦋', '🎈', '🎵', '💡', '⏰', '🔑', '❤️', '🏆', '🎉', '🌟', '🍀', '🍕', '🍦', '🍩', '🍔'];
-
         const gridSize = 4; // Grille 4x4
         const totalCells = gridSize * gridSize;
-        let originalMotifsInGrid = new Set(); // Les motifs présents dans la grille de mémorisation
-        let correctIntruderMotif = ''; // Le motif intrus à trouver
+
+        let originalMotifsInGrid = new Set();
+        let correctIntruderMotif = '';
         let level = 1;
-        let numUniqueMotifs = 3; // Nombre de motifs uniques à placer dans la grille au début (augmentera avec le niveau)
-        let memoTime = 8; // Temps de mémorisation en secondes (variera avec le niveau)
+        let numUniqueMotifs = 3;
+        let memoTime = 8;
         let timerInterval;
         let score = 0;
         let lives = 3;
-        const INITIAL_LIVES = 3; // Constante pour les vies initiales
+        const INITIAL_LIVES = 3;
         let bestScore = localStorage.getItem('bestScore') ? parseInt(localStorage.getItem('bestScore')) : 0;
 
-        // Sons du jeu
+        let consecutiveCorrectAnswers = 0; // Pour les combos
+        let currentTheme = localStorage.getItem('gameTheme') || 'default'; // Pour les skins (si le thème pixel art était activé, il le restera)
+
+        // --- Sons du jeu ---
         const soundCorrect = new Audio('https://www.soundjay.com/buttons/beep-07a.mp3');
         const soundWrong = new Audio('https://www.soundjay.com/buttons/beep-09.mp3');
-        const soundTimerTick = new Audio('https://www.soundjay.com/buttons/button-20.mp3'); // Peut être joué en boucle pour les dernières secondes
+        const soundTimerTick = new Audio('https://www.soundjay.com/buttons/button-20.mp3');
         const soundGameStart = new Audio('https://www.soundjay.com/buttons/button-10.mp3');
         const soundGameOver = new Audio('https://www.soundjay.com/misc/fail-buzzer-01.mp3');
 
         // --- Fonctions utilitaires ---
-
-        // Mélange un tableau (Fisher-Yates)
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -305,13 +374,15 @@
         }
 
         // --- Fonctions de création / affichage ---
-
         function createGridCells(container, className) {
-            container.innerHTML = ''; // Vide les cellules existantes
+            container.innerHTML = '';
             const cells = [];
             for (let i = 0; i < totalCells; i++) {
                 const cell = document.createElement('div');
                 cell.classList.add(className);
+                if (currentTheme === 'pixelart') {
+                    cell.classList.add('pixel-style');
+                }
                 cell.dataset.id = i;
                 container.appendChild(cell);
                 cells.push(cell);
@@ -322,199 +393,75 @@
         function populateGrid(container, cells, motifsToPlace, randomPlacement = true) {
             cells.forEach(cell => {
                 cell.textContent = '';
-                cell.classList.remove('hidden-motif'); // Assurez-vous qu'ils sont visibles au début
+                cell.classList.remove('hidden-motif');
+                if (currentTheme === 'pixelart') {
+                    cell.classList.add('pixel-style');
+                }
             });
 
             const availableCells = Array.from({ length: totalCells }, (_, i) => i);
             shuffleArray(availableCells);
 
+            let placedMotifs = Array(totalCells).fill(''); 
+
             if (randomPlacement) {
-                const motifCounts = {}; // Pour suivre combien de fois chaque motif apparaît
-                motifsToPlace.forEach(motif => motifCounts[motif] = 0);
+                let tempMotifsToPlace = [...motifsToPlace];
 
-                // Pour s'assurer que chaque motif apparaît au moins une fois et répartir le reste
-                let tempAvailableCells = [...availableCells]; // Copie pour placement initial
-                for (let i = 0; i < motifsToPlace.length; i++) {
-                    const motif = motifsToPlace[i];
-                    if (tempAvailableCells.length > 0) {
-                        const cellIndex = tempAvailableCells.pop();
-                        cells[cellIndex].textContent = motif;
-                        motifCounts[motif]++;
-                        // Retirer de la liste principale pour éviter de le replacer ici par hasard
-                        const originalIndex = availableCells.indexOf(cellIndex);
-                        if (originalIndex > -1) {
-                            availableCells.splice(originalIndex, 1);
-                        }
-                    }
-                }
-
-                // Placer les motifs restants aléatoirement, garantissant une apparition minimum
-                const remainingCells = shuffleArray(availableCells); // Mélanger les cellules restantes
                 let motifIndex = 0;
-                while (remainingCells.length > 0) {
-                    const motif = motifsToPlace[motifIndex % motifsToPlace.length]; // Boucle sur les motifs
-                    const cellIndex = remainingCells.pop();
-                    cells[cellIndex].textContent = motif;
-                    motifCounts[motif]++;
+                motifsToPlace.forEach(motif => {
+                    if (motifIndex < availableCells.length) {
+                        const cellIdx = availableCells[motifIndex];
+                        cells[cellIdx].textContent = motif;
+                        placedMotifs[cellIdx] = motif;
+                        motifIndex++;
+                    }
+                });
+
+                while (motifIndex < availableCells.length) {
+                    const randomMotif = tempMotifsToPlace[Math.floor(Math.random() * tempMotifsToPlace.length)];
+                    const cellIdx = availableCells[motifIndex];
+                    cells[cellIdx].textContent = randomMotif;
+                    placedMotifs[cellIdx] = randomMotif;
                     motifIndex++;
                 }
             } else {
-                // Pour la sélection des intrus, on affiche dans l'ordre
                 motifsToPlace.forEach((motif, index) => {
-                    if (cells[index]) { // S'assurer que la cellule existe
+                    if (cells[index]) {
                         cells[index].textContent = motif;
                     }
                 });
             }
         }
 
-
-        // --- Logique du jeu ---
-
-        async function startMemorizationPhase() {
-            soundGameStart.play();
-            introScreen.style.display = 'none'; // Masque l'écran d'intro
-            gameStatusDisplay.style.display = 'block'; // Affiche le score/vies
-            levelInfo.style.display = 'block'; // Affiche le niveau
-            messageDisplay.textContent = 'Mémorisez les motifs et leurs emplacements !';
-            timerDisplay.style.color = 'var(--timer-color)';
-            disableButtons();
-
-            gameGridMemo.style.display = 'grid';
-            intruderSelectionDiv.style.display = 'none';
-
-            // 1. Déterminer les paramètres du niveau
-            memoTime = Math.max(3, 8 - Math.floor((level - 1) / 2)); // Diminue le temps toutes les 2 niveaux, min 3s
-            numUniqueMotifs = Math.min(allMotifs.length - 2, 3 + Math.floor((level - 1) / 2)); // Augmente les motifs toutes les 2 niveaux, max allMotifs.length-2
-
-            // 2. Choisir les motifs uniques pour ce round
-            const shuffledAllMotifs = shuffleArray([...allMotifs]);
-            const selectedUniqueMotifs = shuffledAllMotifs.slice(0, numUniqueMotifs);
-            originalMotifsInGrid = new Set(selectedUniqueMotifs); // Garde une trace des motifs présents
-
-            // 3. Remplir la grille de mémorisation avec ces motifs
-            const memoCells = createGridCells(gameGridMemo, 'grid-cell');
-            populateGrid(gameGridMemo, memoCells, selectedUniqueMotifs, true);
-
-            // 4. Lancer le compte à rebours
-            let timeLeft = memoTime;
-            timerDisplay.textContent = `Temps : ${timeLeft}s`;
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                timerDisplay.textContent = `Temps : ${timeLeft}s`;
-                if (timeLeft <= 3 && timeLeft > 0) {
-                    soundTimerTick.currentTime = 0; // Réinitialise le son si besoin
-                    soundTimerTick.play();
-                }
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    timerDisplay.textContent = '';
-                    // Ajouter un petit délai pour l'animation de masquage
-                    memoCells.forEach(cell => cell.classList.add('hidden-motif')); // Fait disparaître les motifs
-                    setTimeout(startSelectionPhase, 600); // Laisse le temps à l'opacité de s'animer
-                }
-            }, 1000);
-        }
-
-        function startSelectionPhase() {
-            messageDisplay.textContent = 'Trouvez le motif intrus !';
+        // --- Fonctions de gestion de l'UI ---
+        function hideAllScreens() {
+            introScreen.style.display = 'none';
             gameGridMemo.style.display = 'none';
-            intruderSelectionDiv.style.display = 'grid';
-
-            // 1. Choisir 4 motifs de la grille originale + 1 intrus (ou plus pour les niveaux supérieurs)
-            const numSelectionOptions = Math.min(allMotifs.length, 5 + Math.floor((level - 1) / 3)); // Augmente le nombre de choix
-            
-            const motifsForSelection = shuffleArray(Array.from(originalMotifsInGrid)).slice(0, numSelectionOptions - 1);
-
-            // Trouver un intrus qui n'était ABSOLUMENT PAS dans la grille
-            let potentialIntruder;
-            const availableIntruders = allMotifs.filter(motif => !originalMotifsInGrid.has(motif));
-            
-            if (availableIntruders.length === 0) {
-                // Cas d'urgence si tous les motifs sont dans la grille (ne devrait pas arriver avec allMotifs assez grand)
-                potentialIntruder = '❓'; // Un motif de secours
-            } else {
-                potentialIntruder = shuffleArray(availableIntruders)[0];
-            }
-            
-            correctIntruderMotif = potentialIntruder;
-            motifsForSelection.push(correctIntruderMotif);
-            shuffleArray(motifsForSelection); // Mélanger les motifs avant de les afficher
-
-            // 2. Afficher les motifs pour la sélection
-            intruderSelectionDiv.innerHTML = ''; // Nettoyer avant d'ajouter
-            motifsForSelection.forEach((motif) => {
-                const cell = document.createElement('div');
-                cell.classList.add('selection-motif');
-                cell.textContent = motif;
-                cell.dataset.motif = motif;
-                cell.addEventListener('click', handleSelectionClick);
-                intruderSelectionDiv.appendChild(cell);
-            });
+            intruderSelectionDiv.style.display = 'none';
+            nextRoundButton.style.display = 'none';
+            restartButton.style.display = 'none';
         }
 
-        function handleSelectionClick(event) {
-            const clickedMotif = event.target.dataset.motif;
-            
-            // Désactiver tous les clics après la première tentative
-            Array.from(intruderSelectionDiv.children).forEach(cell => cell.removeEventListener('click', handleSelectionClick));
-            disableButtons(); // Désactiver les boutons de contrôle pendant le feedback
-
-            if (clickedMotif === correctIntruderMotif) {
-                soundCorrect.play();
-                messageDisplay.textContent = 'Correct ! Vous avez trouvé l\'intrus.';
-                messageDisplay.style.color = 'var(--correct-color)';
-                event.target.classList.add('correct');
-                score += 100 + (level * 10); // Gagne plus de points avec le niveau
-                level++;
-                levelInfo.textContent = `Niveau : ${level}`;
-                
-                updateGameStatus();
-                nextRoundButton.style.display = 'inline-block';
-                nextRoundButton.disabled = false;
-            } else {
-                soundWrong.play();
-                messageDisplay.textContent = `Faux ! L'intrus était "${correctIntruderMotif}".`;
-                messageDisplay.style.color = 'var(--wrong-color)';
-                event.target.classList.add('wrong');
-                lives--;
-                updateGameStatus();
-
-                // Montre quel était le bon intrus
-                Array.from(intruderSelectionDiv.children).forEach(cell => {
-                    if (cell.dataset.motif === correctIntruderMotif) {
-                        cell.classList.add('correct');
-                    }
-                });
-                
-                if (lives <= 0) {
-                    soundGameOver.play();
-                    messageDisplay.textContent = `Game Over ! Votre score final est ${score}.`;
-                    messageDisplay.style.color = '#e74c3c'; // Rouge plus foncé pour Game Over
-                    if (score > bestScore) {
-                        bestScore = score;
-                        localStorage.setItem('bestScore', bestScore);
-                        bestScoreDisplay.textContent = `Nouveau meilleur score : ${bestScore}`;
-                        bestScoreDisplay.style.display = 'block';
-                    }
-                    restartButton.style.display = 'inline-block';
-                    restartButton.disabled = false;
-                } else {
-                    nextRoundButton.textContent = "Continuer"; // Changer le texte pour continuer après une erreur
-                    nextRoundButton.style.display = 'inline-block';
-                    nextRoundButton.disabled = false;
-                    restartButton.style.display = 'inline-block'; // Option de redémarrer à tout moment
-                    restartButton.disabled = false;
-                }
-            }
+        function showIntroScreen() {
+            hideAllScreens();
+            introScreen.style.display = 'flex';
+            gameStatusDisplay.style.display = 'none';
+            levelInfo.style.display = 'none';
+            bestScoreDisplay.style.display = 'block';
+            updateGameStatus();
         }
 
-        // --- Gestion des boutons et initialisation ---
+        function showGameUI() {
+            hideAllScreens();
+            gameStatusDisplay.style.display = 'block';
+            levelInfo.style.display = 'block';
+            bestScoreDisplay.style.display = 'block';
+        }
 
         function disableButtons() {
-            startIntroButton.disabled = true;
-            nextRoundButton.disabled = true;
-            restartButton.disabled = true;
+            document.querySelectorAll('button.control-button').forEach(button => {
+                button.disabled = true;
+            });
         }
 
         function enableButtons() {
@@ -524,49 +471,250 @@
         }
 
         function updateGameStatus() {
-            let hearts = '❤️'.repeat(lives) + '🖤'.repeat(INITIAL_LIVES - lives); // Cœurs pleins/vides
-            gameStatusDisplay.textContent = `Score: ${score} | Vies: ${hearts}`;
+            let heartsHtml = '';
+            for (let i = 0; i < INITIAL_LIVES; i++) {
+                if (i < lives) {
+                    heartsHtml += '<span class="heart">❤️</span>';
+                } else {
+                    heartsHtml += '<span class="heart-empty">🖤</span>';
+                }
+            }
+            
+            let comboText = consecutiveCorrectAnswers > 0 ? ` | Combo x${1 + Math.floor(consecutiveCorrectAnswers / 3)}` : '';
+            gameStatusDisplay.textContent = `Score: ${score} | `;
+            gameStatusDisplay.innerHTML += `Vies: ${heartsHtml}${comboText}`;
             bestScoreDisplay.textContent = `Meilleur score : ${bestScore}`;
         }
 
+        function applyTheme(themeName) {
+            document.body.classList.remove('theme-pixelart');
+            if (themeName === 'pixelart') {
+                document.body.classList.add(`theme-${themeName}`);
+            }
+            const cells = document.querySelectorAll('.grid-cell, .selection-motif');
+            cells.forEach(cell => {
+                cell.classList.remove('pixel-style');
+                if (themeName === 'pixelart') {
+                    cell.classList.add('pixel-style');
+                }
+            });
+            localStorage.setItem('gameTheme', themeName);
+            currentTheme = themeName;
+        }
+
+        // Fonction d'effet de confettis
+        function createConfettiEffect() {
+            const confettiCount = 50;
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.top = `${Math.random() * 100}vh`;
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                confetti.style.animation = `fall ${2 + Math.random() * 3}s ease-out forwards`;
+                document.body.appendChild(confetti);
+
+                confetti.addEventListener('animationend', () => {
+                    confetti.remove();
+                });
+            }
+        }
+
+        // --- Logique du jeu ---
         function resetGame() {
             level = 1;
             numUniqueMotifs = 3;
             memoTime = 8;
             score = 0;
             lives = INITIAL_LIVES;
+            consecutiveCorrectAnswers = 0;
+            
+            clearInterval(timerInterval); 
+
             levelInfo.textContent = `Niveau : ${level}`;
-            messageDisplay.textContent = ''; // Vide le message après redémarrage
+            messageDisplay.textContent = '';
             timerDisplay.textContent = '';
             gameGridMemo.style.display = 'none';
             intruderSelectionDiv.style.display = 'none';
-            clearInterval(timerInterval); // Arrête tout timer en cours
-            
-            // Réinitialise l'affichage et les boutons pour l'écran d'intro
-            introScreen.style.display = 'flex';
-            gameStatusDisplay.style.display = 'none';
-            levelInfo.style.display = 'none';
-            nextRoundButton.style.display = 'none';
-            restartButton.style.display = 'none';
-            bestScoreDisplay.style.display = 'block'; // Affiche toujours le meilleur score sur l'écran d'accueil
-            nextRoundButton.textContent = "Niveau Suivant"; // S'assurer que le texte du bouton est correct pour le prochain round
 
-            updateGameStatus(); // Met à jour l'affichage des vies/score
-            enableButtons(); // Active les boutons de l'écran d'accueil
+            showIntroScreen(); // Retourne à l'écran d'introduction
+            updateGameStatus(); 
+            enableButtons(); 
         }
 
-        // Écouteurs d'événements
-        startIntroButton.addEventListener('click', startMemorizationPhase);
-        nextRoundButton.addEventListener('click', startMemorizationPhase);
-        restartButton.addEventListener('click', resetGame);
+        async function startMemorizationPhase() {
+            soundGameStart.play();
+            showGameUI();
+            messageDisplay.textContent = 'Mémorisez les motifs !';
+            timerDisplay.style.color = 'var(--timer-color)';
+            disableButtons();
 
-        // Initialisation au chargement
+            gameGridMemo.style.display = 'grid';
+            intruderSelectionDiv.style.display = 'none';
+
+            // Ajustement de la difficulté pour le mode classique
+            memoTime = Math.max(3, 8 - Math.floor((level - 1) / 2));
+            numUniqueMotifs = Math.min(allMotifs.length - 2, 3 + Math.floor((level - 1) / 2));
+
+            const shuffledAllMotifs = shuffleArray([...allMotifs]);
+            const selectedUniqueMotifs = shuffledAllMotifs.slice(0, numUniqueMotifs);
+            originalMotifsInGrid = new Set(selectedUniqueMotifs);
+
+            const memoCells = createGridCells(gameGridMemo, 'grid-cell');
+            populateGrid(gameGridMemo, memoCells, selectedUniqueMotifs, true);
+
+            let timeLeft = memoTime;
+            timerDisplay.textContent = `Temps : ${timeLeft}s`;
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = `Temps : ${timeLeft}s`;
+                if (timeLeft <= 3 && timeLeft > 0) {
+                    soundTimerTick.currentTime = 0;
+                    soundTimerTick.play();
+                }
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.textContent = '';
+                    memoCells.forEach(cell => cell.classList.add('hidden-motif'));
+                    setTimeout(startSelectionPhase, 600);
+                }
+            }, 1000);
+        }
+
+        function startSelectionPhase() {
+            messageDisplay.textContent = 'Trouvez le motif intrus !';
+            gameGridMemo.style.display = 'none';
+            intruderSelectionDiv.style.display = 'grid';
+
+            const numSelectionOptions = Math.min(allMotifs.length, 5 + Math.floor((level - 1) / 3));
+            
+            let availableIntruders = allMotifs.filter(motif => !originalMotifsInGrid.has(motif));
+            
+            let potentialIntruder;
+            if (availableIntruders.length === 0) {
+                // Fallback si tous les motifs sont utilisés (très rare à moins d'avoir très peu de motifs)
+                potentialIntruder = shuffleArray([...allMotifs])[0]; 
+            } else {
+                potentialIntruder = shuffleArray(availableIntruders)[0];
+            }
+            
+            correctIntruderMotif = potentialIntruder;
+            
+            const motifsForSelection = [correctIntruderMotif];
+            let motifsFromGrid = shuffleArray(Array.from(originalMotifsInGrid));
+            
+            for (let i = 0; motifsForSelection.length < numSelectionOptions && i < motifsFromGrid.length; i++) {
+                if (motifsFromGrid[i] !== correctIntruderMotif) {
+                    motifsForSelection.push(motifsFromGrid[i]);
+                }
+            }
+            
+            shuffleArray(motifsForSelection);
+
+            intruderSelectionDiv.innerHTML = '';
+            motifsForSelection.forEach((motif) => {
+                const cell = document.createElement('div');
+                cell.classList.add('selection-motif');
+                if (currentTheme === 'pixelart') {
+                    cell.classList.add('pixel-style');
+                }
+                cell.textContent = motif;
+                cell.dataset.motif = motif;
+                
+                cell.addEventListener('click', handleSelectionClick);
+                intruderSelectionDiv.appendChild(cell);
+            });
+        }
+
+        function handleSelectionClick(event) {
+            const clickedMotif = event.target.dataset.motif;
+            
+            Array.from(intruderSelectionDiv.children).forEach(cell => {
+                cell.removeEventListener('click', handleSelectionClick);
+                cell.style.cursor = 'default'; 
+            });
+            disableButtons();
+
+            if (clickedMotif === correctIntruderMotif) {
+                soundCorrect.play();
+                messageDisplay.textContent = 'Correct !';
+                messageDisplay.style.color = 'var(--correct-color)';
+                event.target.classList.add('correct');
+                
+                consecutiveCorrectAnswers++;
+                let scoreMultiplier = 1 + Math.floor(consecutiveCorrectAnswers / 3);
+                score += (100 + (level * 10)) * scoreMultiplier;
+
+                if (consecutiveCorrectAnswers >= 3 || level % 5 === 0) {
+                    messageDisplay.textContent = `Excellent ! Combo x${scoreMultiplier}!`;
+                    createConfettiEffect();
+                }
+
+                level++;
+                levelInfo.textContent = `Niveau : ${level}`;
+                
+                updateGameStatus();
+
+                nextRoundButton.style.display = 'inline-block';
+                nextRoundButton.disabled = false;
+                nextRoundButton.textContent = "Niveau Suivant";
+
+
+            } else {
+                soundWrong.play();
+                messageDisplay.textContent = `Faux ! L'intrus était "${correctIntruderMotif}".`;
+                messageDisplay.style.color = 'var(--wrong-color)';
+                event.target.classList.add('wrong');
+                
+                consecutiveCorrectAnswers = 0;
+                updateGameStatus();
+
+                lives--;
+
+                Array.from(intruderSelectionDiv.children).forEach(cell => {
+                    if (cell.dataset.motif === correctIntruderMotif) {
+                        cell.classList.add('correct');
+                    }
+                });
+                
+                if (lives <= 0) {
+                    soundGameOver.play();
+                    messageDisplay.textContent = `Game Over ! Votre score final est ${score}.`;
+                    messageDisplay.style.color = '#e74c3c';
+                    if (score > bestScore) {
+                        bestScore = score;
+                        localStorage.setItem('bestScore', bestScore);
+                        bestScoreDisplay.textContent = `Nouveau meilleur score : ${bestScore}`;
+                    }
+                    restartButton.style.display = 'inline-block';
+                    restartButton.disabled = false;
+                    nextRoundButton.style.display = 'none';
+                } else {
+                    nextRoundButton.textContent = "Continuer";
+                    nextRoundButton.style.display = 'inline-block';
+                    nextRoundButton.disabled = false;
+                    restartButton.style.display = 'inline-block';
+                    restartButton.disabled = false;
+                }
+            }
+            setTimeout(enableButtons, 1000); 
+        }
+
+        // --- Gestion des événements ---
+        startIntroButton.addEventListener('click', startMemorizationPhase); 
+        nextRoundButton.addEventListener('click', startMemorizationPhase);
+        restartButton.addEventListener('click', resetGame); 
+
+        // --- Initialisation au chargement ---
         document.addEventListener('DOMContentLoaded', () => {
-            initialLivesSpan.textContent = INITIAL_LIVES; // Met à jour le nombre de vies dans les règles
-            updateGameStatus(); // Met à jour l'affichage initial du score/vies
-            bestScoreDisplay.style.display = 'block'; // Affiche le meilleur score dès le début
-            // S'assurer que le bouton de démarrage est actif
-            startIntroButton.disabled = false;
+            initialLivesSpan.textContent = INITIAL_LIVES;
+            updateGameStatus();
+            bestScoreDisplay.style.display = 'block';
+            
+            showIntroScreen();
+            applyTheme(currentTheme); // Applique le thème par défaut ou celui du localStorage
         });
     </script>
 </body>
