@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Zone Sécurisée</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #0f0;
+      font-family: monospace;
+      text-align: center;
+      padding-top: 100px;
+    }
+  </style>
+  <script>
+    // 🧠 Obfuscation via fonctions encapsulées
+    (function(){
+      const disableRightClick = function(){
+        document.addEventListener('contextmenu', e => e.preventDefault());
+      };
+
+      const blockDevToolsKeys = function(){
+        document.addEventListener('keydown', function(e){
+          if (
+            e.key === "F12" ||
+            (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J")) ||
+            (e.ctrlKey && e.key === "U")
+          ) {
+            e.preventDefault();
+            alert("Fonction désactivée.");
+            location.reload();
+          }
+        });
+      };
+
+      const detectDevTools = function(){
+        const threshold = 160;
+        setInterval(() => {
+          const before = new Date().getTime();
+          debugger;
+          const after = new Date().getTime();
+          if (after - before > threshold) {
+            document.body.innerHTML = "<h1>Intrusion détectée. Session fermée.</h1>";
+            console.clear();
+            throw new Error("DevTools détecté");
+          }
+        }, 1000);
+      };
+
+      // 🕵️‍♂️ Détection taille fenêtre modifiée (signe de DevTools ouverts)
+      const detectResize = function(){
+        let initialWidth = window.outerWidth;
+        let initialHeight = window.outerHeight;
+        window.addEventListener('resize', () => {
+          if (Math.abs(window.outerHeight - initialHeight) > 150 || Math.abs(window.outerWidth - initialWidth) > 150) {
+            document.body.innerHTML = "<h1>Détection de tricheur 👀</h1>";
+            console.clear();
+          }
+        });
+      };
+
+      // 🌀 Anti-tampering – vérifie si le script est modifié
+      const integrityCheck = function(){
+        const expected = 'function';
+        if (typeof disableRightClick !== expected) {
+          document.body.innerHTML = "<h1>Script modifié ❌</h1>";
+          throw new Error("Code modifié détecté");
+        }
+      };
+
+      // Execution
+      disableRightClick();
+      blockDevToolsKeys();
+      detectDevTools();
+      detectResize();
+      setTimeout(integrityCheck, 2000);
+    })();
+  </script>
+</head>
+<body>
+  <h1>Bienvenue dans une zone restreinte 🔐</h1>
+  <p>Vos actions sont surveillées. Toute tentative de triche sera sanctionnée.</p>
+</body>
+</html>
