@@ -717,5 +717,91 @@
             applyTheme(currentTheme); // Applique le thème par défaut ou celui du localStorage
         });
     </script>
+    <script>
+  (function() {
+    const STORAGE_KEY = 'cguAccepted';
+
+    // Si déjà accepté, ne rien faire
+    if (localStorage.getItem(STORAGE_KEY) === 'true') return;
+
+    // Création de la modal
+    const modal = document.createElement('div');
+    Object.assign(modal.style, {
+      position: 'fixed',
+      top: '0',
+      left: '0',
+      width: '100vw',
+      height: '100vh',
+      backgroundColor: 'rgba(0,0,0,0.9)',
+      color: '#fff',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: '9999999',
+      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    });
+    modal.innerHTML = `
+      <div style="
+        background: #222;
+        padding: 30px;
+        border-radius: 12px;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 0 15px #0f0;
+        user-select: text;
+      ">
+        <h2 style="color: #0f0; margin-bottom: 20px;">Conditions d'Utilisation</h2>
+        <p style="margin-bottom: 25px; line-height: 1.5;">
+          Vous devez accepter les conditions générales pour continuer à utiliser ce site.
+        </p>
+        <button id="acceptBtn" style="
+          padding: 12px 25px;
+          font-size: 16px;
+          font-weight: bold;
+          color: #000;
+          background-color: #0f0;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          user-select: none;
+          transition: background-color 0.3s ease;
+        ">J'accepte</button>
+      </div>
+    `;
+
+    // Ajouter modal au body
+    document.body.appendChild(modal);
+
+    // Bloquer scroll et interactions sur le reste de la page
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.pointerEvents = 'none';
+    modal.style.pointerEvents = 'auto'; // modal cliquable/interactif
+
+    // Bouton accepter
+    document.getElementById('acceptBtn').addEventListener('click', () => {
+      localStorage.setItem(STORAGE_KEY, 'true');
+      // Retirer modal et débloquer page
+      modal.remove();
+      document.documentElement.style.overflow = '';
+      document.body.style.pointerEvents = '';
+    });
+
+    // Empêcher fermeture par echap ou clic hors modal
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape') e.preventDefault();
+    });
+
+    modal.addEventListener('click', e => {
+      e.stopPropagation();
+    });
+
+    document.addEventListener('click', e => {
+      if (!modal.contains(e.target)) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
+  })();
+</script>
 </body>
 </html>
