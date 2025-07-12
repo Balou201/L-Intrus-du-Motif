@@ -1,3 +1,4 @@
+alert('Le script CGU est chargé');
 (function() {
   const STORAGE_KEY = 'cguAccepted';
 
