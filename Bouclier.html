@@ -2,10 +2,10 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Zone Sécurisée</title>
+  <title>Zone Protégée</title>
   <style>
     body {
-      background-color: #000;
+      background-color: #111;
       color: #0f0;
       font-family: monospace;
       text-align: center;
@@ -13,13 +13,35 @@
     }
   </style>
   <script>
-    // 🧠 Obfuscation via fonctions encapsulées
-    (function(){
-      const disableRightClick = function(){
-        document.addEventListener('contextmenu', e => e.preventDefault());
-      };
+    (function () {
+      // Supprime tout le contenu et tente de fermer la page
+      function detruirePage() {
+        document.body.innerHTML = "<h1>🔒 Intrusion détectée. Fermeture en cours...</h1>";
+        console.clear();
+        setTimeout(() => {
+          window.open('', '_self');
+          window.close(); // Ne fonctionne que si ouvert par script
+          window.location.href = "about:blank"; // Redirige si fermeture impossible
+        }, 500);
+      }
 
-      const blockDevToolsKeys = function(){
+      // Détecte DevTools via délai
+      function detectDevTools() {
+        const threshold = 160;
+        setInterval(() => {
+          const start = new Date().getTime();
+          debugger;
+          const end = new Date().getTime();
+          if (end - start > threshold) {
+            detruirePage();
+            throw new Error("DevTools détecté");
+          }
+        }, 1000);
+      }
+
+      // Blocage clavier + clic droit
+      function bloquerInteractions() {
+        document.addEventListener('contextmenu', e => e.preventDefault());
         document.addEventListener('keydown', function(e){
           if (
             e.key === "F12" ||
@@ -27,58 +49,30 @@
             (e.ctrlKey && e.key === "U")
           ) {
             e.preventDefault();
-            alert("Fonction désactivée.");
-            location.reload();
+            detruirePage();
           }
         });
-      };
+      }
 
-      const detectDevTools = function(){
-        const threshold = 160;
-        setInterval(() => {
-          const before = new Date().getTime();
-          debugger;
-          const after = new Date().getTime();
-          if (after - before > threshold) {
-            document.body.innerHTML = "<h1>Intrusion détectée. Session fermée.</h1>";
-            console.clear();
-            throw new Error("DevTools détecté");
-          }
-        }, 1000);
-      };
-
-      // 🕵️‍♂️ Détection taille fenêtre modifiée (signe de DevTools ouverts)
-      const detectResize = function(){
-        let initialWidth = window.outerWidth;
-        let initialHeight = window.outerHeight;
+      // Résolution écran changée = suspicion
+      function detectResize() {
+        const h = window.outerHeight, w = window.outerWidth;
         window.addEventListener('resize', () => {
-          if (Math.abs(window.outerHeight - initialHeight) > 150 || Math.abs(window.outerWidth - initialWidth) > 150) {
-            document.body.innerHTML = "<h1>Détection de tricheur 👀</h1>";
-            console.clear();
+          if (Math.abs(window.outerHeight - h) > 200 || Math.abs(window.outerWidth - w) > 200) {
+            detruirePage();
           }
         });
-      };
+      }
 
-      // 🌀 Anti-tampering – vérifie si le script est modifié
-      const integrityCheck = function(){
-        const expected = 'function';
-        if (typeof disableRightClick !== expected) {
-          document.body.innerHTML = "<h1>Script modifié ❌</h1>";
-          throw new Error("Code modifié détecté");
-        }
-      };
-
-      // Execution
-      disableRightClick();
-      blockDevToolsKeys();
+      // Init
+      bloquerInteractions();
       detectDevTools();
       detectResize();
-      setTimeout(integrityCheck, 2000);
     })();
   </script>
 </head>
 <body>
-  <h1>Bienvenue dans une zone restreinte 🔐</h1>
-  <p>Vos actions sont surveillées. Toute tentative de triche sera sanctionnée.</p>
+  <h1>🛡️ Accès sécurisé</h1>
+  <p>Toute tentative de triche est surveillée.</p>
 </body>
 </html>
