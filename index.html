@@ -717,14 +717,12 @@
             applyTheme(currentTheme); // Applique le thème par défaut ou celui du localStorage
         });
     </script>
-    <script>
+<script>
   (function() {
     const STORAGE_KEY = 'cguAccepted';
 
-    // Si déjà accepté, ne rien faire
     if (localStorage.getItem(STORAGE_KEY) === 'true') return;
 
-    // Création de la modal
     const modal = document.createElement('div');
     Object.assign(modal.style, {
       position: 'fixed',
@@ -732,61 +730,93 @@
       left: '0',
       width: '100vw',
       height: '100vh',
-      backgroundColor: 'rgba(0,0,0,0.9)',
-      color: '#fff',
+      backgroundColor: 'rgba(0,0,0,0.95)',
+      color: '#e0e0e0',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      zIndex: '9999999',
+      zIndex: '2147483647',
       fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+      userSelect: 'none',
+      padding: '20px',
+      boxSizing: 'border-box',
     });
+
     modal.innerHTML = `
       <div style="
-        background: #222;
-        padding: 30px;
-        border-radius: 12px;
-        max-width: 400px;
-        text-align: center;
-        box-shadow: 0 0 15px #0f0;
+        background: #121212;
+        border-radius: 15px;
+        box-shadow: 0 0 30px #00ff00cc;
+        max-width: 600px;
+        max-height: 80vh;
+        padding: 30px 40px;
+        overflow-y: auto;
+        color: #c8ffc8;
         user-select: text;
       ">
-        <h2 style="color: #0f0; margin-bottom: 20px;">Conditions d'Utilisation</h2>
-        <p style="margin-bottom: 25px; line-height: 1.5;">
-          Vous devez accepter les conditions générales pour continuer à utiliser ce site.
+        <h1 style="color: #00ff00; margin-bottom: 25px; font-weight: 900; text-align: center;">
+          Conditions Générales d'Utilisation
+        </h1>
+        <section style="margin-bottom: 20px; font-size: 16px; line-height: 1.5;">
+          <h2 style="color: #80ff80; margin-bottom: 10px;">1. Acceptation des conditions</h2>
+          <p>
+            En utilisant ce site, vous acceptez pleinement et sans réserve les présentes conditions générales d'utilisation. 
+            Si vous n'acceptez pas ces termes, vous êtes prié de ne pas utiliser ce site.
+          </p>
+        </section>
+        <section style="margin-bottom: 20px; font-size: 16px; line-height: 1.5;">
+          <h2 style="color: #80ff80; margin-bottom: 10px;">2. Utilisation du site</h2>
+          <p>
+            Vous vous engagez à utiliser ce site conformément aux lois en vigueur, ainsi qu'aux bonnes pratiques d'internet.
+            Toute tentative de modification, de contournement de sécurité, ou d'altération non autorisée du contenu ou du fonctionnement du site est strictement interdite.
+          </p>
+        </section>
+        <section style="margin-bottom: 20px; font-size: 16px; line-height: 1.5;">
+          <h2 style="color: #80ff80; margin-bottom: 10px;">3. Protection et sécurité</h2>
+          <p>
+            Ce site utilise des mécanismes de sécurité avancés pour protéger le contenu et empêcher toute manipulation non autorisée.
+            Toute violation détectée peut entraîner un blocage d'accès ou d'autres mesures techniques.
+          </p>
+        </section>
+        <section style="margin-bottom: 25px; font-size: 16px; line-height: 1.5;">
+          <h2 style="color: #80ff80; margin-bottom: 10px;">4. Responsabilités</h2>
+          <p>
+            L'utilisateur est seul responsable de son comportement et de la manière dont il utilise le site.
+            L'équipe du site ne peut être tenue responsable des dommages directs ou indirects résultant d'une utilisation non conforme.
+          </p>
+        </section>
+        <p style="text-align: center; font-weight: 700; font-size: 17px; margin-bottom: 30px;">
+          En cliquant sur "J'accepte", vous reconnaissez avoir lu, compris et accepté l'intégralité de ces conditions.
         </p>
         <button id="acceptBtn" style="
-          padding: 12px 25px;
-          font-size: 16px;
-          font-weight: bold;
+          background-color: #00ff00;
           color: #000;
-          background-color: #0f0;
+          font-weight: 900;
           border: none;
-          border-radius: 8px;
+          padding: 15px 40px;
+          border-radius: 12px;
           cursor: pointer;
-          user-select: none;
+          font-size: 18px;
+          width: 100%;
           transition: background-color 0.3s ease;
+          user-select: none;
         ">J'accepte</button>
       </div>
     `;
 
-    // Ajouter modal au body
     document.body.appendChild(modal);
 
-    // Bloquer scroll et interactions sur le reste de la page
     document.documentElement.style.overflow = 'hidden';
     document.body.style.pointerEvents = 'none';
-    modal.style.pointerEvents = 'auto'; // modal cliquable/interactif
+    modal.style.pointerEvents = 'auto';
 
-    // Bouton accepter
     document.getElementById('acceptBtn').addEventListener('click', () => {
       localStorage.setItem(STORAGE_KEY, 'true');
-      // Retirer modal et débloquer page
       modal.remove();
       document.documentElement.style.overflow = '';
       document.body.style.pointerEvents = '';
     });
 
-    // Empêcher fermeture par echap ou clic hors modal
     window.addEventListener('keydown', e => {
       if (e.key === 'Escape') e.preventDefault();
     });
