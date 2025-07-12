@@ -1,54 +1,43 @@
 (function() {
   const STORAGE_KEY = 'cguAccepted';
 
-  // Vérifie si déjà accepté
   if (localStorage.getItem(STORAGE_KEY) === 'true') {
-    return; // ok, on ne bloque pas
+    return; // déjà accepté
   }
 
-  // Bloque interactions
-  function blockPage() {
-    document.documentElement.style.overflow = 'hidden'; // bloque scroll
-    document.body.style.pointerEvents = 'none'; // bloque clics
-    document.body.style.userSelect = 'none'; // bloque sélection
-  }
-
-  // Débloque interactions
-  function unblockPage() {
-    document.documentElement.style.overflow = '';
-    document.body.style.pointerEvents = '';
-    document.body.style.userSelect = '';
-  }
-
-  // Création modal
+  // Création de la modal
   const modal = document.createElement('div');
   modal.id = 'cguModal';
-  modal.style.position = 'fixed';
-  modal.style.top = '0';
-  modal.style.left = '0';
-  modal.style.width = '100vw';
-  modal.style.height = '100vh';
-  modal.style.backgroundColor = 'rgba(0,0,0,0.85)';
-  modal.style.color = '#fff';
-  modal.style.display = 'flex';
-  modal.style.justifyContent = 'center';
-  modal.style.alignItems = 'center';
-  modal.style.zIndex = '999999';
-  modal.style.padding = '20px';
-  modal.style.boxSizing = 'border-box';
-  modal.style.fontFamily = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+  Object.assign(modal.style, {
+    position: 'fixed',
+    top: '0',
+    left: '0',
+    width: '100vw',
+    height: '100vh',
+    backgroundColor: 'rgba(0,0,0,0.95)',
+    color: '#fff',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: '2147483647', // max z-index
+    padding: '20px',
+    boxSizing: 'border-box',
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    userSelect: 'none',
+  });
 
   modal.innerHTML = `
     <div style="
       max-width: 500px; 
       background: #121212; 
       border-radius: 12px; 
-      box-shadow: 0 0 15px rgba(0,255,0,0.7);
+      box-shadow: 0 0 20px #0f0;
       padding: 30px;
       text-align: center;
       color: #c8ffc8;
       line-height: 1.5;
       font-size: 15px;
+      user-select: text;
     ">
       <h2 style="color: #0f0; margin-bottom: 15px; font-weight: 700;">Conditions d'Utilisation</h2>
       <div style="
@@ -60,38 +49,69 @@
         margin-bottom: 25px;
         text-align: left;
         box-shadow: inset 0 0 10px #0f0a;
-        ">
+      ">
         <p>1. Vous acceptez de ne pas modifier ou tenter de contourner cette page.</p>
         <p>2. Toute tentative non autorisée sera sanctionnée.</p>
         <p>3. L'accès est conditionné à l'acceptation des présentes conditions.</p>
         <p>4. En cliquant sur <strong>"J'accepte"</strong>, vous reconnaissez avoir lu et compris ces termes.</p>
       </div>
       <button id="acceptCGU" style="
-        background-color: #0f0;
-        color: #000;
-        border: none;
-        padding: 14px 35px;
-        font-size: 17px;
-        font-weight: 700;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        width: 100%;
+        background-color: #0f0 !important;
+        color: #000 !important;
+        border: none !important;
+        padding: 14px 35px !important;
+        font-size: 17px !important;
+        font-weight: 700 !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        transition: background-color 0.3s ease !important;
+        width: 100% !important;
+        user-select: auto !important;
       ">J'accepte</button>
     </div>
   `;
 
-  // Ajout modal
   document.body.appendChild(modal);
+
+  // Bloquer interactions page entière avec styles en important
+  function blockPage() {
+    const styleId = 'cgu-block-style';
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.innerHTML = `
+        html, body {
+          overflow: hidden !important;
+          pointer-events: none !important;
+          user-select: none !important;
+          height: 100% !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        #cguModal, #cguModal * {
+          pointer-events: auto !important;
+          user-select: auto !important;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+
+  function unblockPage() {
+    const style = document.getElementById('cgu-block-style');
+    if (style) style.remove();
+  }
+
   blockPage();
 
-  // Gestion focus et tabulation
   const acceptBtn = document.getElementById('acceptCGU');
   acceptBtn.focus();
 
-  // Trap focus inside modal
-  document.addEventListener('keydown', function(e) {
-    if (!modal.parentElement) return; // modal supprimé, rien à faire
+  // Focus trap dans modal
+  document.addEventListener('keydown', e => {
+    if (!document.body.contains(modal)) return;
+    if (e.key === 'Escape') e.preventDefault();
+
     if (e.key === 'Tab') {
       const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
       const first = focusable[0];
@@ -108,27 +128,39 @@
         }
       }
     }
-    if(e.key === 'Escape'){
-      // Empêche fermeture via ESC
+  });
+
+  // Empêche clics hors modal
+  document.addEventListener('click', e => {
+    if (document.body.contains(modal) && !modal.contains(e.target)) {
       e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true);
+
+  // Empêche touches clavier hors modal
+  document.addEventListener('keydown', e => {
+    if (document.body.contains(modal) && !modal.contains(document.activeElement)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true);
+
+  // MutationObserver pour restaurer la modal si supprimée ou modifiée
+  const observer = new MutationObserver(mutations => {
+    const isInDOM = document.body.contains(modal);
+    if (!isInDOM) {
+      document.body.appendChild(modal);
+      blockPage();
     }
   });
 
-  // Clique sur "J'accepte"
+  observer.observe(document.body, { childList: true, subtree: true });
+
   acceptBtn.addEventListener('click', () => {
     localStorage.setItem(STORAGE_KEY, 'true');
     unblockPage();
     modal.remove();
+    observer.disconnect();
   });
-
-  // Empêche clic hors modal et sélection
-  modal.addEventListener('click', e => {
-    e.stopPropagation();
-  });
-  document.addEventListener('click', e => {
-    if (modal.parentElement) {
-      e.stopPropagation();
-      e.preventDefault();
-    }
-  }, true);
 })();
